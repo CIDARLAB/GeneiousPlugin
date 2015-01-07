@@ -58,71 +58,21 @@ public class RemoveRegionPlugin extends GeneiousPlugin {
     		final AnnotatedPluginDocument doc = documents[0];
 
             final SequenceDocument sequenceDoc = (SequenceDocument) doc.getDocument();
-            String seq = sequenceDoc.getSequenceString();
-
-            //StringBuilder sb = new StringBuilder(seq);
-            
-            
-            final String name = doc.getName();
-            final String description = sequenceDoc.getDescription();
-
-            final Date date = new Date();
-
-            //PluginDocument newDoc;
 
             if( sequenceDoc instanceof NucleotideSequenceDocument) {
             	
-               //reversedDoc = new DefaultNucleotideSequence(rname, rdescription, reversed, date);
             } else if( sequenceDoc instanceof AminoAcidSequenceDocument) {
             	//TODO: Handle this
                 throw new DocumentOperationException("Expected a nucleotide sequence");
-            	//reversedDoc = new DefaultAminoAcidSequence(rname, rdescription, reversed, date);
             } else {
                 throw new DocumentOperationException("unexpected sequence");
             }
             List<PluginDocument> results = new ArrayList<PluginDocument>();
-            //results.add(newDoc);
             
-            //TODO: return what?
             return DocumentUtilities.createAnnotatedPluginDocuments(results);
 	
     		
     	}
-
-    	/*
-    	//TODO: Rewrite all this code
-        @Override
-        public List<AnnotatedPluginDocument> performOperation(AnnotatedPluginDocument[] documents, ProgressListener progressListener, Options options) throws DocumentOperationException {
-            final AnnotatedPluginDocument doc = documents[0];
-
-            final SequenceDocument sequenceDoc = (SequenceDocument) doc.getDocument();
-            String seq = sequenceDoc.getSequenceString();
-
-            StringBuilder sb = new StringBuilder(seq);
-
-            final String name = doc.getName();
-            final String description = sequenceDoc.getDescription();
-
-            final Date date = new Date();
-
-            PluginDocument newDoc;
-
-            if( sequenceDoc instanceof NucleotideSequenceDocument) {
-            	newDoc = RegionRemover.
-               //reversedDoc = new DefaultNucleotideSequence(rname, rdescription, reversed, date);
-            } else if( sequenceDoc instanceof AminoAcidSequenceDocument) {
-            	//TODO: Handle this
-                throw new DocumentOperationException("Expected a nucleotide sequence");
-            	//reversedDoc = new DefaultAminoAcidSequence(rname, rdescription, reversed, date);
-            } else {
-                throw new DocumentOperationException("unexpected sequence");
-            }
-            List<PluginDocument> results = new ArrayList<PluginDocument>();
-            results.add(newDoc);
-            
-            //TODO: return what?
-            return DocumentUtilities.createAnnotatedPluginDocuments(results);
-        } */
 
         public GeneiousActionOptions getActionOptions() {
             return new GeneiousActionOptions("Remove Region", "Delete a region from the selected sequence",
