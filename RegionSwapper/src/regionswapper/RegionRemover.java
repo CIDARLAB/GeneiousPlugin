@@ -11,9 +11,9 @@ import jebl.util.ProgressListener;
 import org.virion.jam.util.SimpleListener;
 
 import com.biomatters.geneious.publicapi.documents.AnnotatedPluginDocument;
-import com.biomatters.geneious.publicapi.documents.sequence.NucleotideSequenceDocument;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotation;
 import com.biomatters.geneious.publicapi.documents.sequence.SequenceAnnotationInterval;
+import com.biomatters.geneious.publicapi.documents.sequence.SequenceDocument;
 import com.biomatters.geneious.publicapi.plugin.DocumentOperationException;
 import com.biomatters.geneious.publicapi.plugin.DocumentSelectionSignature;
 import com.biomatters.geneious.publicapi.plugin.GeneiousActionOptions;
@@ -40,7 +40,7 @@ public class RegionRemover extends SequenceAnnotationGenerator{
 	@Override
     public DocumentSelectionSignature[] getSelectionSignatures() {
         return new DocumentSelectionSignature[] {
-                new DocumentSelectionSignature(NucleotideSequenceDocument.class,1,1)
+                new DocumentSelectionSignature(SequenceDocument.class,1,1)
                 // This indicates this annotation generator will accept a single nucleotide sequence as input
         };
     }
@@ -48,12 +48,28 @@ public class RegionRemover extends SequenceAnnotationGenerator{
 	public Options getOptions(final AnnotatedPluginDocument[] documents, final SelectionRange selectionRange) throws DocumentOperationException {
 	    final Options options = new Options(getClass());
 		
-		NucleotideSequenceDocument document = (NucleotideSequenceDocument) documents[0].getDocument();
+		SequenceDocument document = (SequenceDocument) documents[0].getDocument();
 		  				
 		int maxSequenceLength = document.getSequenceLength();
-		int start = selectionRange.getFirstSelectedResidue();
-		int end = selectionRange.getLastSelectedResidue();
-
+		
+		int start = 0;
+		int end = 0;
+		
+		if (selectionRange != null){
+			start = selectionRange.getFirstSelectedResidue();
+			end = selectionRange.getLastSelectedResidue();
+		};
+		/*
+		//select which active document to use
+		List<Options.OptionValue> names = new ArrayList<Options.OptionValue>();
+		for (Integer i = 0 ; i < documents.length; i++){
+			String name = documents[i].getName();
+			names.add(new Options.OptionValue(i.toString(),name));
+		}
+		options.addComboBoxOption("docSelector", "Active document to modify", names, names.get(0));
+		*/
+		
+		//the location options
 		options.addCustomOption(new SelectionGrabOption("selectionGrabber", new Interval(start, end)));
 		options.getOption("selectionGrabber").addChangeListener(new SimpleListener(){
 			public void objectChanged(){
@@ -67,7 +83,7 @@ public class RegionRemover extends SequenceAnnotationGenerator{
 		});
 
 		options.addIntegerOption("selectionStart","Region Start",start,0,maxSequenceLength);
-		options.addIntegerOption("selectionEnd","Region End",end,0,maxSequenceLength);
+		options.addIntegerOption("selectionEnd","Region End",end,0,maxSequenceLength*2);//may go over max length in circular seq
 		
 		//reset to the current selection
 		options.getOption("selectionStart").restoreDefault();
@@ -90,14 +106,26 @@ public class RegionRemover extends SequenceAnnotationGenerator{
 		int end = (Integer) regionRemoverOptions.getOption("selectionEnd").getValue();
 		
 		//create the new sequence with the deletion, as a subclass of AnnotationGeneratorResult
-		ResidueAdjustment adjustment = new ResidueAdjustment(start,end,"");
 		
 		//add the new deletion site annotation
 		SequenceAnnotation annotation = new SequenceAnnotation("Deletion Site", "deletion",
 				new SequenceAnnotationInterval(start,start));
 		
 		AnnotationGeneratorResult result = new AnnotationGeneratorResult();
-		result.addResidueAdjustment(adjustment);
+				
+		//handle the case of a deletion on a circular sequence spanning the origin
+		//String docIdx = regionRemoverOptions.getOption("docSelector").getName();
+		//AnnotatedPluginDocument doc = documentList[Integer.parseInt(docIdx)];
+		
+		int sequenceLength = ((SequenceDocument) documentList[0].getDocument()).getSequenceLength();
+		if (end > sequenceLength){
+			result.addResidueAdjustment(new ResidueAdjustment(start,sequenceLength,""));
+			result.addResidueAdjustment(new ResidueAdjustment(0,end % sequenceLength,""));
+		}
+		else{
+			result.addResidueAdjustment(new ResidueAdjustment(start,end,""));
+		}
+		
 		result.addAnnotationToAdd(annotation);
 		
 		results.add(result);

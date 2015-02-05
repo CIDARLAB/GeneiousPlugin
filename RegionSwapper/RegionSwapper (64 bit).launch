@@ -20,7 +20,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.biomatters.iseek.application.ISeekMain"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="extraPlugins=&quot;regionswapper.RemoveRegionPlugin&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="extraPlugins=&quot;regionswapper.RegionSwapperPlugin&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="RegionSwapper"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-XX:+UseConcMarkSweepGC -ea -Xss512K -Xms256M -Xmx768M -XX:MaxPermSize=256M -Djava.util.logging.config.file=no_logging.properties"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:GeneiousFiles}"/>

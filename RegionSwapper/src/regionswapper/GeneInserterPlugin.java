@@ -68,7 +68,7 @@ public class GeneInserterPlugin extends GeneiousPlugin {
                 throw new DocumentOperationException("unexpected sequence");
             }
             List<PluginDocument> results = new ArrayList<PluginDocument>();
-            
+            //TODO: change to do work here
             return DocumentUtilities.createAnnotatedPluginDocuments(results);
 	
     		

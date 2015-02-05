@@ -65,8 +65,11 @@ public class GeneInserter extends SequenceAnnotationGenerator{
 		NucleotideSequenceDocument document = (NucleotideSequenceDocument) documents[0].getDocument();
 		  				
 		int maxSequenceLength = document.getSequenceLength();
-		int start = selectionRange.getFirstSelectedResidue();
-		//int end = selectionRange.getLastSelectedResidue();
+		int start = 0;
+		
+		if (selectionRange != null){
+			start = selectionRange.getFirstSelectedResidue();
+		}
 
 		/*options.addCustomOption(new SelectionGrabOption("selectionGrabber", new Interval(start, end)));
 		options.getOption("selectionGrabber").addChangeListener(new SimpleListener(){
